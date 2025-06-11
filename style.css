@@ -1,0 +1,136 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #0a0f0a; /* negro verdoso oscuro */
+  font-family: "Orbitron", "Courier New", Courier, monospace, sans-serif;
+  color: #7fff00; /* verde neón */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  min-height: 100vh;
+  user-select: none;
+}
+
+/* Importar la fuente Orbitron para estilo futurista */
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap");
+
+h1 {
+  font-size: 3rem;
+  font-weight: 500;
+  margin-bottom: 40px;
+  text-shadow: 0 0 6px #7fff00, 0 0 12px #7fff00, 0 0 18px #00ff00;
+  letter-spacing: 0.2em;
+}
+
+/* Canvas con borde y glow verde neón */
+.canvas_conteiner {
+  width: 600px;
+  height: 150px;
+  background: #021001;
+  border: 3px solid #7fff00;
+  border-radius: 15px;
+  box-shadow: 0 0 10px #7fff00, inset 0 0 15px #00ff00;
+  margin-bottom: 50px;
+  display: block;
+}
+
+/* Botones estilo Omnitrix */
+.buttons-container {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.btn {
+  background: linear-gradient(145deg, #0f3d00, #52ff00);
+  border: 2px solid #00ff00;
+  border-radius: 30px;
+  color: #021001;
+  font-size: 1.8rem;
+  font-weight: 700;
+  padding: 14px 36px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  box-shadow: 0 0 8px #7fff00, 0 0 15px #00ff00 inset;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  user-select: none;
+  min-width: 140px;
+  text-align: center;
+}
+
+.btn:hover {
+  box-shadow: 0 0 15px #00ff00, 0 0 30px #7fff00 inset;
+  transform: scale(1.1);
+}
+
+.btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 6px #00ff00;
+}
+
+/* Responsive */
+@media (max-width: 650px) {
+  .canvas_conteiner {
+    width: 90vw;
+    height: 120px;
+  }
+
+  .btn {
+    font-size: 1.4rem;
+    min-width: 110px;
+    padding: 10px 20px;
+  }
+}
+
+#omnitrix {
+  position: relative;
+  width: 300px; /* tamaño del reloj */
+  height: 300px;
+}
+
+#dial {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s ease;
+  transform-origin: center center;
+}
+
+#center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+}
+
+#center_off,
+#center_on,
+#alien_silhouette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#omnitrix_transformed {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px; /* Match original Omnitrix size */
+  height: 300px; /* Match original Omnitrix size */
+}
