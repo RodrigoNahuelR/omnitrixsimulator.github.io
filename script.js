@@ -195,13 +195,13 @@ function handleSwipe(distance) {
   if (distance > threshold) {
     // Anterior alien
     indice = (indice - 1 + aliens.length) % aliens.length;
-    angulo -= 90;
+    angulo += 90;
     sonido_previus.currentTime = 0;
     sonido_previus.play();
   } else if (distance < -threshold) {
     // Siguiente alien
     indice = (indice + 1) % aliens.length;
-    angulo += 90;
+    angulo -= 90;
     sonido_next.currentTime = 0;
     sonido_next.play();
   } else {
