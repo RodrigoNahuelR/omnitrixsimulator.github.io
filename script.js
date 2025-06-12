@@ -6,12 +6,12 @@ let transformado = false;
 let timeoutID = null;
 
 // Elementos DOM
-const canvas = document.getElementById("my_canvas");
-const ctx = canvas.getContext("2d");
+
 const center = document.getElementById("center");
-const omnitrix_transform = document.getElementById("omnitrix_transformed");
 const dial_omnitrix = document.getElementById("dial");
 const silueta = document.getElementById("alien_silhouette");
+const center_off = document.getElementById("center_off");
+const center_on = document.getElementById("center_on");
 
 // Sonidos
 const sonido_transormacion = new Audio("sounds/omnitrix-transform.mp3");
@@ -19,8 +19,7 @@ const sonido_next = new Audio("sounds/omnitrix-next.mp3");
 const sonido_previus = new Audio("sounds/omnitrix-previus.mp3");
 const sonido_activacion = new Audio("sounds/omnitrix-activado.mp3");
 const sonido_loop = new Audio("sounds/omnitrix_waiting_selection.mp3");
-const sonido_tiempo_agotado = new Audio("sounds/omnitrix-power_down.mp3");
-
+const sonido_tiempo_agotado = new Audio("sounds/omnitrix-power-down.mp3");
 sonido_loop.loop = true;
 
 // Lista de aliens
@@ -37,7 +36,7 @@ const aliens = [
   "ultra_t",
 ];
 
-// Flash verde al transformarse
+// Flash verde
 const flash = document.createElement("div");
 flash.style.position = "fixed";
 flash.style.top = 0;
@@ -47,10 +46,25 @@ flash.style.height = "100vh";
 flash.style.backgroundColor = "#00ff00";
 flash.style.opacity = "0";
 flash.style.pointerEvents = "none";
-flash.style.transition = "opacity 0.3s ease";
+flash.style.transition = "opacity 0.2s ease-in-out";
 flash.style.zIndex = "9999";
 document.body.appendChild(flash);
 
+// Flash rojo
+const redFlash = document.createElement("div");
+redFlash.style.position = "fixed";
+redFlash.style.top = "0";
+redFlash.style.left = "0";
+redFlash.style.width = "100vw";
+redFlash.style.height = "100vh";
+redFlash.style.backgroundColor = "#ff0000";
+redFlash.style.opacity = "0";
+redFlash.style.pointerEvents = "none";
+redFlash.style.transition = "opacity 0.2s ease-in-out";
+redFlash.style.zIndex = "9999";
+document.body.appendChild(redFlash);
+
+// Flash verde al transformar
 function hacerFlash() {
   flash.style.opacity = "0.8";
   setTimeout(() => {
@@ -58,27 +72,52 @@ function hacerFlash() {
   }, 300);
 }
 
-// Activar Omnitrix o Transformar
+// Flash rojo final mejorado (sin romper tu ritmo)
+function hacerFlashRojoFinal(callback) {
+  const tiempos = [200, 180, 150, 150, 600];
+  let i = 0;
+
+  function parpadear() {
+    if (i >= tiempos.length) {
+      if (callback) callback();
+      return;
+    }
+
+    redFlash.style.opacity = "0.85";
+
+    setTimeout(() => {
+      redFlash.style.opacity = "0";
+      setTimeout(() => {
+        i++;
+        parpadear();
+      }, 80);
+    }, tiempos[i]);
+  }
+
+  parpadear();
+}
+
+// Evento tocar el centro
 center.addEventListener("click", () => {
   if (!omnitrix_activado && !transformado) {
-    // ENCENDER
-    document.getElementById("center_off").style.display = "none";
-    document.getElementById("center_on").style.display = "block";
+    // Encender Omnitrix
+    center_off.style.display = "none";
+    center_on.style.display = "block";
 
     sonido_activacion.currentTime = 0;
     sonido_activacion.play();
 
     sonido_activacion.onended = () => {
       sonido_loop.currentTime = 0;
-      sonido_loop.play(); // Play waiting selection sound
+      sonido_loop.play();
     };
 
     omnitrix_activado = true;
     mostrar_alien();
   } else if (omnitrix_activado && !transformado) {
-    // TRANSFORMAR
+    // Transformarse
     hacerFlash();
-    sonido_loop.pause(); // Stop waiting selection sound
+    sonido_loop.pause();
     sonido_loop.currentTime = 0;
     sonido_transormacion.currentTime = 0;
     sonido_transormacion.play();
@@ -86,126 +125,126 @@ center.addEventListener("click", () => {
     transformado = true;
     omnitrix_activado = false;
 
-    // Ensure Omnitrix changes to transformed state
-    document.getElementById("center_on").style.display = "none";
-    silueta.style.display = "none";
-    const omnitrix_transformed = document.createElement("img");
-    omnitrix_transformed.id = "omnitrix_transformed";
-    omnitrix_transformed.src = "graphics/omnitrix-transformed.svg";
-    omnitrix_transformed.className = "omnitrix_transformed"; // Use CSS class for styling
-    document.getElementById("center").appendChild(omnitrix_transformed);
+    // Mostrar silueta
+    silueta.style.display = "block";
+
+    // Cambiar el centro por la imagen de transformación
+    center_on.style.display = "none";
+    center_off.style.display = "none";
+
+    const imgTransformado = document.createElement("img");
+    imgTransformado.src = "graphics/omnitrix-transformed.svg";
+    imgTransformado.id = "center_transformed";
+    imgTransformado.style.position = "absolute";
+    imgTransformado.style.top = "0";
+    imgTransformado.style.left = "0";
+    imgTransformado.style.width = "100%";
+    imgTransformado.style.height = "100%";
+    center.appendChild(imgTransformado);
 
     timeoutID = setTimeout(() => {
-      sonido_tiempo_agotado.src = "sounds/omnitrix-power-down.mp3"; // Correct sound file
       sonido_tiempo_agotado.currentTime = 0;
       sonido_tiempo_agotado.play();
 
-      // Flash red 5 times, with the last flash slower and longer-lasting
-      let flashCount = 0;
-      let flashInterval = setInterval(
-        () => {
-          flash.style.backgroundColor = "#ff0000"; // Red flash
-          flash.style.opacity = "0.8";
-
-          if (flashCount === 4) {
-            // Change image to omnitrix-transformed.svg immediately on the last flash
-            document.getElementById("center_on").style.display = "none";
-            document.getElementById("center_off").style.display = "block";
-            document.getElementById("omnitrix_transformed").remove();
-            silueta.style.display = "none";
-            transformado = false;
-            indice = 0;
-            angulo = 90;
-            dial_omnitrix.style.transform = `rotate(${angulo}deg)`;
-            mostrar_alien();
-          }
-
-          setTimeout(
-            () => {
-              flash.style.opacity = "0";
-            },
-            flashCount === 4 ? 1500 : 300
-          ); // Last flash fades out slower
-
-          flashCount++;
-          if (flashCount >= 5) {
-            clearInterval(flashInterval); // Stop flashing
-            flash.style.transition = "opacity 1.5s ease"; // Slow fade-out transition
-            flash.style.opacity = "0"; // Fade out slowly
-            setTimeout(() => {
-              flash.style.backgroundColor = "#00ff00"; // Reset to green for future flashes
-            }, 1500); // Delay for smooth transition
-          }
-        },
-        flashCount === 4 ? 1200 : 600
-      ); // Last flash slower
+      hacerFlashRojoFinal(() => {
+        // Apagar Omnitrix
+        document.getElementById("center_transformed")?.remove();
+        center_on.style.display = "none";
+        center_off.style.display = "block";
+        silueta.style.display = "none";
+        transformado = false;
+        indice = 0;
+        angulo = 90;
+        dial_omnitrix.style.transform = `rotate(${angulo}deg)`;
+        mostrar_alien();
+      });
     }, 30000);
   }
 });
 
-// Mostrar alien en canvas y silueta si corresponde
+// Mostrar alien en canvas y silueta (solo si activado o transformado)
 function mostrar_alien() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (omnitrix_activado || transformado) {
+    const alien_seleccionado = aliens[indice];
 
-  if (omnitrix_activado && !transformado) {
-    const alien = aliens[indice];
-    ctx.font = "30px Arial";
-    ctx.fillStyle = "white";
-    ctx.fillText(alien, 50, 50);
-    silueta.src = `graphics/${alien}.svg`;
+    silueta.src = `graphics/${alien_seleccionado}.svg`;
     silueta.style.display = "block";
   } else {
     silueta.style.display = "none";
   }
 }
 
-// === GESTOS PARA DESLIZAR ===
+// GESTOS — Touch
 let touchStartX = 0;
 let touchEndX = 0;
 
-document.addEventListener("touchstart", (e) => {
-  touchStartX = e.touches[0].screenX; // Ensure touch detection works globally on phones
+document.body.addEventListener("touchstart", (e) => {
+  touchStartX = e.changedTouches[0].screenX;
 });
 
-document.addEventListener("touchend", (e) => {
-  touchEndX = e.changedTouches[0].screenX; // Ensure touch detection works globally on phones
+document.body.addEventListener("touchend", (e) => {
+  touchEndX = e.changedTouches[0].screenX;
   handleSwipe(touchEndX - touchStartX);
 });
 
-let isDragging = false;
-let mouseStartX = 0;
+// GESTOS EN TODA LA PANTALLA — Movimiento tipo rueda
+let gestureStartX = 0;
+let gestureStartY = 0;
+let gestureEndX = 0;
 
-document.addEventListener("mousedown", (e) => {
-  isDragging = true;
-  mouseStartX = e.clientX; // Detect mouse down anywhere on the screen
+// Touch
+document.body.addEventListener("touchstart", (e) => {
+  const touch = e.changedTouches[0];
+  gestureStartX = touch.clientX;
+  gestureStartY = touch.clientY;
 });
 
-document.addEventListener("mouseup", (e) => {
-  if (!isDragging) return;
-  isDragging = false;
-  const mouseEndX = e.clientX; // Detect mouse up anywhere on the screen
-  handleSwipe(mouseEndX - mouseStartX);
+document.body.addEventListener("touchend", (e) => {
+  const touch = e.changedTouches[0];
+  gestureEndX = touch.clientX;
+  handleWheelSwipe(gestureStartX, gestureStartY, gestureEndX);
 });
 
-function handleSwipe(distance) {
+// Mouse (PC)
+let dragging = false;
+
+document.body.addEventListener("mousedown", (e) => {
+  dragging = true;
+  gestureStartX = e.clientX;
+  gestureStartY = e.clientY;
+});
+
+document.body.addEventListener("mouseup", (e) => {
+  if (!dragging) return;
+  dragging = false;
+  gestureEndX = e.clientX;
+  handleWheelSwipe(gestureStartX, gestureStartY, gestureEndX);
+});
+
+// Nueva lógica de control de dirección tipo rueda
+function handleWheelSwipe(startX, startY, endX) {
   if (!omnitrix_activado || transformado) return;
 
-  const threshold = 50;
+  const deltaX = endX - startX;
+  const umbral = 50; // sensibilidad mínima
+  const pantallaMitad = window.innerHeight / 2;
 
-  if (distance > threshold) {
-    // Anterior alien
-    indice = (indice - 1 + aliens.length) % aliens.length;
-    angulo += 90;
-    sonido_previus.currentTime = 0;
-    sonido_previus.play();
-  } else if (distance < -threshold) {
-    // Siguiente alien
+  if (Math.abs(deltaX) < umbral) return;
+
+  const desdeArriba = startY < pantallaMitad;
+  const sentidoHorario =
+    (desdeArriba && deltaX > 0) || (!desdeArriba && deltaX < 0);
+
+  if (sentidoHorario) {
     indice = (indice + 1) % aliens.length;
-    angulo -= 90;
+    angulo += 90;
     sonido_next.currentTime = 0;
     sonido_next.play();
   } else {
-    return;
+    indice = (indice - 1 + aliens.length) % aliens.length;
+    angulo -= 90;
+    sonido_previus.currentTime = 0;
+    sonido_previus.play();
   }
 
   dial_omnitrix.style.transform = `rotate(${angulo}deg)`;

@@ -20,61 +20,17 @@ body {
 /* Importar la fuente Orbitron para estilo futurista */
 @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap");
 
+.container {
+  align-items: center;
+  justify-content: center;
+}
+
 h1 {
   font-size: 3rem;
   font-weight: 500;
   margin-bottom: 40px;
   text-shadow: 0 0 6px #7fff00, 0 0 12px #7fff00, 0 0 18px #00ff00;
   letter-spacing: 0.2em;
-}
-
-/* Canvas con borde y glow verde neón */
-.canvas_conteiner {
-  width: 600px;
-  height: 150px;
-  background: #021001;
-  border: 3px solid #7fff00;
-  border-radius: 15px;
-  box-shadow: 0 0 10px #7fff00, inset 0 0 15px #00ff00;
-  margin-bottom: 50px;
-  display: block;
-}
-
-/* Botones estilo Omnitrix */
-.buttons-container {
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.btn {
-  background: linear-gradient(145deg, #0f3d00, #52ff00);
-  border: 2px solid #00ff00;
-  border-radius: 30px;
-  color: #021001;
-  font-size: 1.8rem;
-  font-weight: 700;
-  padding: 14px 36px;
-  cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  box-shadow: 0 0 8px #7fff00, 0 0 15px #00ff00 inset;
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
-  user-select: none;
-  min-width: 140px;
-  text-align: center;
-}
-
-.btn:hover {
-  box-shadow: 0 0 15px #00ff00, 0 0 30px #7fff00 inset;
-  transform: scale(1.1);
-}
-
-.btn:active {
-  transform: scale(0.95);
-  box-shadow: 0 0 6px #00ff00;
 }
 
 /* Responsive */
@@ -92,9 +48,14 @@ h1 {
 }
 
 #omnitrix {
-  position: relative;
-  width: 300px; /* tamaño del reloj */
+  position: fixed; /* posición fija respecto a la ventana */
+  top: 50%; /* 50% desde arriba */
+  left: 50%; /* 50% desde la izquierda */
+  transform: translate(-50%, -50%); /* ajustar centro */
+  width: 300px;
   height: 300px;
+  /* puedes agregar z-index si quieres que esté sobre otros elementos */
+  z-index: 1000;
 }
 
 #dial {
@@ -133,4 +94,13 @@ h1 {
   transform: translate(-50%, -50%);
   width: 300px; /* Match original Omnitrix size */
   height: 300px; /* Match original Omnitrix size */
+}
+
+footer {
+  margin-top: auto;
+  padding: 20px;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #7fff00;
+  text-shadow: 0 0 6px #7fff00, 0 0 12px #00ff00;
 }
