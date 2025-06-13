@@ -48,7 +48,7 @@ h1 {
 }
 
 #omnitrix {
-  position: fixed; /* posición fija respecto a la ventana */
+  position: absolute; /* posision absoluta */
   top: 50%; /* 50% desde arriba */
   left: 50%; /* 50% desde la izquierda */
   transform: translate(-50%, -50%); /* ajustar centro */

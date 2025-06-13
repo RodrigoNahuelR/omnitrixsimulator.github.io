@@ -74,7 +74,7 @@ function hacerFlash() {
 
 // Flash rojo final mejorado (sin romper tu ritmo)
 function hacerFlashRojoFinal(callback) {
-  const tiempos = [200, 180, 150, 150, 600];
+  const tiempos = [200, 180, 150, 150, 200, 800];
   let i = 0;
 
   function parpadear() {
@@ -158,7 +158,7 @@ center.addEventListener("click", () => {
         dial_omnitrix.style.transform = `rotate(${angulo}deg)`;
         mostrar_alien();
       });
-    }, 30000);
+    }, 10000);
   }
 });
 
