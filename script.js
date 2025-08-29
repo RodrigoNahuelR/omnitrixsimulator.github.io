@@ -158,7 +158,7 @@ center.addEventListener("click", () => {
         dial_omnitrix.style.transform = `rotate(${angulo}deg)`;
         mostrar_alien();
       });
-    }, 10000);
+    }, 20000); // Este es el tiempo de transformacion
   }
 });
 
